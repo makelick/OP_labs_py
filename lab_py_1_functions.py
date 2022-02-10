@@ -19,9 +19,9 @@ def create_second_file(first_file_name, second_file_name):
             lines = infile.read().split("\n")
             for i in lines:
                 if i != "":
-                    i.replace(";", " ")
-                    i.replace(",", " ")
-                    words = i.split(" ")
+                    temp = i.replace(";", " ")
+                    temp = i.replace(",", " ")
+                    words = temp.split()
                     outfile.write(str(count_same_words(words)) + " " + i + "\n")
 
 
