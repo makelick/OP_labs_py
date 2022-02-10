@@ -1,12 +1,9 @@
 def input_file(filename):
     with open(filename, 'w') as infile:
         line = input("Enter text (send empty line to finish): \n")
-        while True:
-            if line != "":
-                infile.write(line + "\n")
-                line = input()
-            else:
-                return
+        while line != "":
+            infile.write(line + "\n")
+            line = input()
 
 
 def output_file(filename):
