@@ -43,8 +43,43 @@ def output_file(filename):
 
         while file.tell() < size:
             employee = pickle.load(file)
-            print("Surname: " + employee["surname"] + "\t \tBirthday: " + get_format(employee["birthday"])
-                  + "\t \t Start career: " + get_format(employee["start_career"]))
+            print_employee(employee)
+
+
+def birthday_in_this_month(filename):
+    with open(filename, 'rb') as file:
+        sys_date = get_system_date()
+        size = file.seek(0, 2)
+        file.seek(0)
+
+        while file.tell() < size:
+            employee = pickle.load(file)
+            work_experience = get_years_between_dates(employee["start_career"], sys_date)
+            if employee["birthday"]["month"] == sys_date["month"] and work_experience >= 5:
+                print_employee(employee)
+
+
+def create_second_file(filein_name, fileout_name):
+    with open(filein_name, 'rb') as filein:
+        with open(fileout_name, 'wb') as fileout:
+            sys_date = get_system_date()
+            size = filein.seek(0, 2)
+            filein.seek(0)
+
+            while filein.tell() < size:
+                employee = pickle.load(filein)
+                start_career_age = get_years_between_dates(employee["birthday"], employee["start_career"])
+                work_experience = get_years_between_dates(employee["start_career"], sys_date)
+                if start_career_age <= 25 and work_experience >= 10:
+                    pickle.dump(employee, fileout)
+
+
+def get_years_between_dates(start_date, end_date):
+    years = end_date["year"] - start_date["year"]
+    if start_date["month"] > end_date["month"] or (start_date["month"] == end_date["month"] and
+                                                   start_date["day"] > end_date["day"]):
+        years -= 1
+    return years
 
 
 def get_format(date):
@@ -59,29 +94,16 @@ def get_format(date):
     return str_day + '.' + str_month + '.' + str(date["year"])
 
 
-def birthday_in_this_month(filename):
-    with open(filename, 'rb') as file:
-        current_datetime = datetime.now()
-        sys_date = {
-            "day": current_datetime.day,
-            "month": current_datetime.month,
-            "year": current_datetime.year
-        }
-        size = file.seek(0, 2)
-        file.seek(0)
-
-        while file.tell() < size:
-            employee = pickle.load(file)
-            work_experience = get_years_between_dates(employee["start_career"], sys_date)
-            if employee["birthday"]["month"] == sys_date["month"] and work_experience >= 5:
-                print("Surname: " + employee["surname"] + "\t \tBirthday: " + get_format(employee["birthday"])
-                      + "\t \t Start career: " + get_format(employee["start_career"]))
+def get_system_date():
+    current_datetime = datetime.now()
+    sys_date = {
+        "day": current_datetime.day,
+        "month": current_datetime.month,
+        "year": current_datetime.year
+    }
+    return sys_date
 
 
-def get_years_between_dates(start_date, end_date):
-    years = end_date["year"] - start_date["year"]
-    if start_date["month"] > end_date["month"] or (start_date["month"] == end_date["month"] and
-                                                   start_date["day"] > end_date["day"]):
-        years -= 1
-    return years
-
+def print_employee(employee):
+    print("Surname: " + employee["surname"] + "\t \tBirthday: " + get_format(employee["birthday"])
+          + "\t \t Start career: " + get_format(employee["start_career"]))
