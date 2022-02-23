@@ -1,4 +1,5 @@
 import pickle
+from datetime import datetime
 
 
 def input_file(filename):
@@ -36,16 +37,14 @@ def input_file(filename):
 
 
 def output_file(filename):
-    file = open(filename, "rb")
-    size = file.seek(0, 2)
-    file.seek(0)
+    with open(filename, 'r') as file:
+        size = file.seek(0, 2)
+        file.seek(0)
 
-    while file.tell() < size:
-        employee = pickle.load(file)
-        print("Surname: " + employee["surname"] + "\t \tBirthday: " + get_format(employee["birthday"])
-              + "\t \t Start career: " + get_format(employee["start_career"]))
-
-    file.close()
+        while file.tell() < size:
+            employee = pickle.load(file)
+            print("Surname: " + employee["surname"] + "\t \tBirthday: " + get_format(employee["birthday"])
+                  + "\t \t Start career: " + get_format(employee["start_career"]))
 
 
 def get_format(date):
@@ -58,3 +57,30 @@ def get_format(date):
         str_month = '0' + str_month
 
     return str_day + '.' + str_month + '.' + str(date["year"])
+
+
+def birthday_in_this_month(filename):
+    with open(filename, 'r') as file:
+        current_datetime = datetime.now()
+        sys_date = {
+            "day": current_datetime.day,
+            "month": current_datetime.month,
+            "year": current_datetime.year
+        }
+        size = file.seek(0, 2)
+        file.seek(0)
+
+        while file.tell() < size:
+            employee = pickle.load(file)
+            work_experience = get_years_between_dates(employee["start_career"], sys_date)
+            if employee.birthday["month"] == sys_date["month"] and work_experience >= 5:
+                print("Surname: " + employee["surname"] + "\t \tBirthday: " + get_format(employee["birthday"])
+                      + "\t \t Start career: " + get_format(employee["start_career"]))
+
+
+def get_years_between_dates(start_date, end_date):
+    years = end_date["year"] - start_date["year"]
+    if start_date["month"] > end_date["month"] or (start_date["month"] == end_date["month"] and
+                                                   start_date["day"] > end_date["day"]):
+        years -= 1
+    return years
