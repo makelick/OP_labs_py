@@ -31,7 +31,13 @@ class Date:
         return self.__day
 
     def __str__(self):
-        return "{}.{}.{}".format(self.__year, self.__month, self.__day)
+        d_str = str(self.__day)
+        if self.__day < 10:
+            d_str = '0' + str(self.__day)
+        m_str = str(self.__month)
+        if self.__month < 10:
+            d_str = '0' + str(self.__month)
+        return "{}.{}.{}".format(d_str, m_str, self.__year)
 
     def get_month_between_dates(self, other):
         return ((self.__year - other.get_year()) * 12) + self.__month - other.get_month()
