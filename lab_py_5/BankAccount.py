@@ -36,7 +36,7 @@ class Date:
             d_str = '0' + str(self.__day)
         m_str = str(self.__month)
         if self.__month < 10:
-            d_str = '0' + str(self.__month)
+            m_str = '0' + str(self.__month)
         return "{}.{}.{}".format(d_str, m_str, self.__year)
 
     def get_month_between_dates(self, other):
